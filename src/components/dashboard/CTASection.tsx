@@ -11,7 +11,7 @@ const CTASection = () => {
           Join thousands of marketers, content creators, and businesses who trust LinkSnip for their URL shortening needs.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="px-8">
+          <Button size="lg" className="px-8 text-white">
             Sign up for free
           </Button>
           <Button size="lg" variant="outline" className="px-8">

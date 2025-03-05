@@ -1,49 +1,74 @@
+/* eslint-disable no-console */
 'use client';
 
-import { ArrowRight } from 'lucide-react'; // Adjust import based on your icon library
-import { useState } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+import useUserLinksStore from '@/store/useUserLinksStore';
+// Adjust import based on your icon library
+import { useEffect } from 'react';
+import URLForm from '../forms/URLForm';
 
 const InputSection = () => {
-  const [url, setUrl] = useState('');
+  const links = useUserLinksStore(state => state.links);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Make a POST request to /api/url/short
-    // const response = await fetch('/api/url/short', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ url }),
-    // });
-    // Handle response
-  };
+  useEffect(() => {
+    console.log('links', links);
+
+    return () => {
+
+    };
+  }, [links]);
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!isLoggedIn && links.length >= 10) {
+  //     toast.error('You have reached the limit of 10 URLs. Please log in to create more.');
+  //   }
+
+  //   try {
+  //     const response = await fetch('/api/url/short', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ longURL: url }),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to shorten the URL');
+  //     }
+
+  //     const newLink = await response.json();
+  //     addLink(newLink); // Update Zustand store
+
+  //     toast.success('URL shortened successfully!');
+  //     setUrl(''); // Clear input field after success
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     toast.error('Something went wrong. Please try again.');
+  //   }
+  // };
 
   return (
     <section className="container mx-auto py-20 text-center">
-      <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-        Shorten URLs,
-        {' '}
-        <span className="text-primary">Expand Reach</span>
-      </h1>
+
+      <div className="w-full flex flex-col items-center justify-center overflow-hidden rounded-md">
+        <h1 className="md:text-6xl text-3xl lg:text-9xl font-bold text-center text-primary dark:text-white relative z-20">
+          LinkSnip
+        </h1>
+        <div className="w-[40rem] h-10 relative">
+          {/* Gradients */}
+          <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
+          <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
+          <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[5px] w-1/4 blur-sm" />
+          <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
+
+          {/* Radial Gradient to prevent sharp edges */}
+          <div className="absolute inset-0 w-full h-full [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]"></div>
+        </div>
+      </div>
       <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-        Transform long, unwieldy links into clean, memorable URLs that drive more clicks and improve user experience.
+        Elevate Your Links: Turn Complex URLs into Click-Worthy Connections!
       </p>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl mx-auto flex flex-col md:flex-row gap-4 mb-16">
-        <Input
-          placeholder="Paste your long URL here..."
-          className="h-12 text-base"
-          value={url}
-          onChange={e => setUrl(e.target.value)}
-        />
-        <Button className="h-12 px-6" type="submit">
-          Shorten URL
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </form>
+      <URLForm />
     </section>
   );
 };

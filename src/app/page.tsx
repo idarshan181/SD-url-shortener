@@ -1,4 +1,3 @@
-import AnalyticsSection from '@/components/dashboard/AnalyticsSection';
 import CTASection from '@/components/dashboard/CTASection';
 import FeaturesSection from '@/components/dashboard/FeaturesSection';
 import InputSection from '@/components/dashboard/InputSection';
@@ -55,7 +54,6 @@ export default async function Page() {
       </nav>
       <InputSection />
       <FeaturesSection />
-      <AnalyticsSection />
       <PricingSection />
       <CTASection />
       <Footer />
