@@ -1,53 +1,58 @@
-import { prisma } from '@/lib/db'; // Adjust the import path as necessary
+import { prisma } from '@/lib/db';
 import { getIp } from '@/lib/getIp';
-import { rateLimitMiddleware } from '@/middleware';
-// Import your rate limiting middleware
+import { urlRouteSchema } from '@/lib/zodSchema';
 import { NextRequest, NextResponse } from 'next/server';
 import { uid } from 'uid';
 
-export async function POST(req: NextRequest) {
-  // Apply rate limiting middleware
-  const rateLimitResponse = await rateLimitMiddleware(req);
-  if (rateLimitResponse) {
-    return rateLimitResponse;
-  } // Return if rate limit exceeded
+// Schema for input validation using Zod
 
+export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-    const { longURL, userId } = data;
 
-    if (!longURL) {
+    // Validate input with Zod
+    const parsedData = urlRouteSchema.safeParse(data);
+    if (!parsedData.success) {
       return NextResponse.json(
-        { message: 'No Long URL Provided' },
+        { message: 'Invalid input', errors: parsedData.error.format() },
         { status: 400 },
       );
     }
 
-    // Generate a unique short URL
-    let shorturl = uid(8);
-    let isExist = true;
+    const { longURL, shortURL, userId } = parsedData.data;
 
-    while (isExist) {
-      const existingURL = await prisma.uRL.findUnique({
-        where: { shortURL: shorturl },
+    // Determine final short URL
+    let finalShortURL: string = shortURL ?? uid(8);
+
+    if (shortURL) {
+      // Check if the custom shortURL is already in use
+      const existingShort = await prisma.uRL.findUnique({
+        where: { shortURL },
       });
-      if (!existingURL) {
-        isExist = false;
-      } else {
-        shorturl = uid(8);
+
+      if (existingShort) {
+        return NextResponse.json(
+          { message: 'Custom short URL is already taken' },
+          { status: 400 },
+        );
+      }
+    } else {
+      // Ensure generated shortURL is unique
+      while (await prisma.uRL.findUnique({ where: { shortURL: finalShortURL } })) {
+        finalShortURL = uid(8);
       }
     }
 
     // Create the new URL entry in the database
     const newURL = await prisma.uRL.create({
       data: {
-        shortURL: shorturl,
+        shortURL: finalShortURL,
         longURL,
-        userId, // Optional: associate with a user if provided
+        userId: userId || null, // Ensure proper DB handling for null values
       },
     });
 
-    // Log analytics (if needed)
+    // Log analytics (user agent & IP tracking)
     await prisma.analytics.create({
       data: {
         urlId: newURL.id,
@@ -56,14 +61,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      shortURL: `${shorturl}`,
-      longURL: `${longURL}`,
-    }, { status: 201 });
-  } catch (error) {
-    console.error(error);
     return NextResponse.json(
-      { message: 'Unable to create your quick URL, try again', error },
+      {
+        shortURL: finalShortURL,
+        longURL,
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error('Error creating short URL:', error);
+    return NextResponse.json(
+      { message: 'Unable to create your quick URL, try again' },
       { status: 500 },
     );
   }
