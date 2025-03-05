@@ -157,7 +157,7 @@ export function SettingsForm() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="mt-4">
                 {isLoading
                   ? (
                       <>
@@ -224,7 +224,7 @@ export function SettingsForm() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="mt-4">
                 {isLoading
                   ? (
                       <>
@@ -294,7 +294,7 @@ export function SettingsForm() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="mt-4">
                 {isLoading
                   ? (
                       <>
