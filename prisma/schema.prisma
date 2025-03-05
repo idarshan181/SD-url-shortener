@@ -74,19 +74,19 @@ model VerificationToken {
 }
 
 model URL {
-  id          String    @id @default(cuid())
+  id          String      @id @default(cuid())
   longURL     String
-  shortURL    String    @unique
-  clicks      Int       @default(0)
+  shortURL    String      @unique
+  clicks      Int         @default(0)
   userId      String? // Optional field to link to a user
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   expiresAt   DateTime? // Optional field for expiration date
   createdFrom String? // Optional field to track where the link was created from
-
-  user      User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Analytics Analytics[]
-  Feedback  Feedback[]
+  qrCode      String? // Optional field to store the QR code image URL
+  user        User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Analytics   Analytics[]
+  Feedback    Feedback[]
 
   @@index([userId, shortURL])
 }
