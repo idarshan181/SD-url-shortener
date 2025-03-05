@@ -38,6 +38,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Return true regardless of whether the user was found or not
       return true;
     },
+
+    async session({ session, token }) {
+      if (token) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email as string },
+          select: { id: true },
+        });
+
+        if (dbUser) {
+          session.user.id = dbUser.id;
+        }
+      }
+
+      return session;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
   jwt: {

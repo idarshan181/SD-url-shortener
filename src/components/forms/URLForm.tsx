@@ -1,4 +1,7 @@
+'use client';
+
 /* eslint-disable no-console */
+
 import { useDebounce } from '@/hooks/useDebounce';
 import { URLFormSchema } from '@/lib/zodSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -110,6 +113,11 @@ export default function URLForm() {
                   className="h-12 text-sm"
                   placeholder="Custom Slug (optional)"
                   {...field}
+                  onChange={(e) => {
+                    const sanitizedValue = e.target.value.replace(/[^\w-]/g, ''); // Allow only alphanumeric, dash, underscore
+                    field.onChange(sanitizedValue);
+                  }}
+                  value={field.value} // Ensure value is properly updated
                 />
               </FormControl>
               <FormMessage />
@@ -141,22 +149,3 @@ export default function URLForm() {
     </Form>
   );
 }
-
-// <form onSubmit={handleSubmit} className="max-w-2xl mx-auto flex flex-col md:flex-row gap-4 mb-16">
-//   <Input
-//     placeholder="Paste your long URL here..."
-//     className="h-12 text-base"
-//     value={url}
-//     onChange={e => setUrl(e.target.value)}
-//   />
-//   <Input
-//     placeholder="Custom Slug (optional)"
-//     className="h-12 text-base"
-//     value={customSlug}
-//     onChange={e => setCustomSlug(e.target.value)}
-//   />
-//   <Button className="h-12 px-6 text-white cursor-pointer" type="submit" disabled={disabled || !url}>
-//     Shorten URL
-//     <ArrowRight className="ml-2 h-4 w-4" />
-//   </Button>
-// </form>
