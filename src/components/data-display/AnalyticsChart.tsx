@@ -32,11 +32,11 @@ interface AnalyticsChartProps {
 }
 
 const COLORS = [
-  'var(--chart-1)',
-  'var(--chart-2)',
-  'var(--chart-3)',
-  'var(--chart-4)',
-  'var(--chart-5)',
+  'hsl(var(--chart-1))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
 ];
 
 export function AnalyticsChart({
@@ -84,8 +84,8 @@ export function AnalyticsChart({
                     <Area
                       type="monotone"
                       dataKey="value"
-                      stroke="var(--chart-1)"
-                      fill="var(--chart-1)"
+                      stroke="hsl(var(--chart-1))"
+                      fill="hsl(var(--chart-1))"
                       fillOpacity={0.3}
                     />
                   </AreaChart>
@@ -105,7 +105,7 @@ export function AnalyticsChart({
                       <XAxis dataKey="name" />
                       <YAxis />
                       <Tooltip />
-                      <Bar dataKey="value" fill="var(--chart-2)" />
+                      <Bar dataKey="value" fill="hsl(var(--chart-2))" />
                     </BarChart>
                   )
                 : (

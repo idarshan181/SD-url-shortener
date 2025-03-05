@@ -50,7 +50,7 @@ export default function ClientSidebar() {
                       <SidebarMenuButton
                         asChild
                         data-active={pathname === item.value}
-                        className="data-[active=true]:bg-foreground data-[active=true]:text-background"
+                        className="data-[active=true]:bg-primary data-[active=true]:text-white"
                       >
                         <Link
                           href={item.value}
