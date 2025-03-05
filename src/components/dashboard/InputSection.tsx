@@ -1,51 +1,6 @@
-/* eslint-disable no-console */
-'use client';
-
-import useUserLinksStore from '@/store/useUserLinksStore';
-// Adjust import based on your icon library
-import { useEffect } from 'react';
 import URLForm from '../forms/URLForm';
 
 const InputSection = () => {
-  const links = useUserLinksStore(state => state.links);
-
-  useEffect(() => {
-    console.log('links', links);
-
-    return () => {
-
-    };
-  }, [links]);
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   if (!isLoggedIn && links.length >= 10) {
-  //     toast.error('You have reached the limit of 10 URLs. Please log in to create more.');
-  //   }
-
-  //   try {
-  //     const response = await fetch('/api/url/short', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ longURL: url }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Failed to shorten the URL');
-  //     }
-
-  //     const newLink = await response.json();
-  //     addLink(newLink); // Update Zustand store
-
-  //     toast.success('URL shortened successfully!');
-  //     setUrl(''); // Clear input field after success
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //     toast.error('Something went wrong. Please try again.');
-  //   }
-  // };
-
   return (
     <section className="container mx-auto py-20 text-center">
 

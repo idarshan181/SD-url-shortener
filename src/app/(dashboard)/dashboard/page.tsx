@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import { AnalyticsChart } from '@/components/data-display/AnalyticsChart';
 import { LinkTable } from '@/components/data-display/LinkTable';
 import { StatsCard } from '@/components/data-display/StatsCard';
 import { URLShortenerForm } from '@/components/forms/URLShortenerForm';
+import { requireUser } from '@/lib/requireUser';
 import { BarChart2, Link2, Users } from 'lucide-react';
 
 const statsData = {
@@ -51,7 +53,10 @@ const chartData = [
   { name: 'Sun', value: 280 },
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const user = await requireUser();
+
+  console.log('user: ', user);
   return (
     <div className="p-4 md:p-6">
       <div className="grid gap-6">
