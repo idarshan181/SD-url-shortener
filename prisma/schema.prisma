@@ -87,6 +87,8 @@ model URL {
   user      User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   Analytics Analytics[]
   Feedback  Feedback[]
+
+  @@index([userId, shortURL])
 }
 
 model Analytics {
