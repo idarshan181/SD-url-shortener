@@ -15,6 +15,21 @@ export const URLSchema = z.object({
 export type URL = z.infer<typeof URLSchema>;
 
 export const URLFormSchema = z.object({
-  longURL: z.string().url(),
-  shortURL: z.string(),
+  longURL: z.string().url({ message: 'Invalid URL format, Please enter a valid URL' }).trim(),
+  shortURL: z.string()
+    .optional()
+    .refine(val => !val || /^[\w-]{3,20}$/.test(val), {
+      message: 'Slug must be alphanumeric (a-z, 0-9, -, _), 3-20 chars',
+    }),
+});
+
+export const urlRouteSchema = z.object({
+  longURL: z.string().url({ message: 'Invalid URL format' }),
+  shortURL: z
+    .string()
+    .optional()
+    .refine(val => !val || /^[\w-]{3,20}$/.test(val), {
+      message: 'Short URL must be alphanumeric (a-z, 0-9, -, _), 3-20 characters',
+    }),
+  userId: z.string().optional(),
 });
