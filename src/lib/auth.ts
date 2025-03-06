@@ -16,41 +16,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: 'jwt',
   },
   callbacks: {
-    async signIn({ user }) {
-      // Check if the user exists in the database
-      if (!user.id) {
-        return false;
-      }
-      const existingUser = await prisma.user.findUnique({
-        where: { id: user.id },
-      });
+    // async signIn({ user }) {
+    //   if (!user.email) {
+    //     return false;
+    //   }
 
-      // If the user exists, update lastLogin
-      if (existingUser) {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            lastLogin: new Date(),
-          },
-        });
-      }
+    //   await prisma.user.update({
+    //     where: { email: user.email },
+    //     data: { lastLogin: new Date() },
+    //   });
 
-      // Return true regardless of whether the user was found or not
-      return true;
-    },
-
-    async session({ session, token }) {
-      if (token) {
+    //   return true;
+    // },
+    async jwt({ token, user }) {
+      if (user?.email && !token.id) {
         const dbUser = await prisma.user.findUnique({
-          where: { email: token.email as string },
+          where: { email: user.email },
           select: { id: true },
         });
 
-        if (dbUser) {
-          session.user.id = dbUser.id;
+        if (dbUser?.id) {
+          token.id = dbUser.id; // Store user ID in JWT token
         }
       }
+      return token;
+    },
 
+    async session({ session, token }) {
+      if (token?.id) {
+        session.user.id = String(token.id);
+
+        // Update lastLogin only when session is renewed
+        await prisma.user.update({
+          where: { id: String(token.id) },
+          data: { lastLogin: new Date() },
+        });
+      }
       return session;
     },
   },
