@@ -33,3 +33,14 @@ export const urlRouteSchema = z.object({
     }),
   userId: z.string().optional(),
 });
+
+export const profileFormSchema = z.object({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
+  email: z.string().email({ message: 'Please enter a valid email address' }),
+});
+
+export const notificationsFormSchema = z.object({
+  emailNotifications: z.boolean(),
+  marketingEmails: z.boolean(),
+  securityAlerts: z.boolean(),
+});
