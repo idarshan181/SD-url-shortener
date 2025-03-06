@@ -1,10 +1,10 @@
-import CTASection from '@/components/dashboard/CTASection';
-import FeaturesSection from '@/components/dashboard/FeaturesSection';
-import InputSection from '@/components/dashboard/InputSection';
-import PricingSection from '@/components/dashboard/PricingSection';
 import Footer from '@/components/general/Footer';
 import { ThemeToggle } from '@/components/general/ThemeToggle';
 import UserDropdown from '@/components/general/UserDropdown';
+import CTASection from '@/components/landing/CTASection';
+import FeaturesSection from '@/components/landing/FeaturesSection';
+import InputSection from '@/components/landing/InputSection';
+import PricingSection from '@/components/landing/PricingSection';
 import { buttonVariants } from '@/components/ui/button';
 import { auth } from '@/lib/auth';
 import { LinkIcon } from 'lucide-react';

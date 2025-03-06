@@ -1,5 +1,5 @@
 import { AnalyticsChart } from '@/components/data-display/AnalyticsChart';
-import { LinkTable } from '@/components/data-display/LinkTable';
+import Links from '@/components/data-display/Links';
 import { StatsCard } from '@/components/data-display/StatsCard';
 import { URLShortenerForm } from '@/components/forms/URLShortenerForm';
 import { requireUser } from '@/lib/requireUser';
@@ -10,37 +10,6 @@ const statsData = {
   totalClicks: 1248,
   activeLinks: 38,
 };
-
-const recentLinks = [
-  {
-    id: '1',
-    originalUrl: 'https://example.com/very/long/url/that/needs/shortening/1',
-    shortUrl: 'abc123',
-    createdAt: new Date(2025, 2, 15),
-    clicks: 423,
-  },
-  {
-    id: '2',
-    originalUrl: 'https://example.com/another/long/url/for/demonstration/2',
-    shortUrl: 'def456',
-    createdAt: new Date(2025, 2, 14),
-    clicks: 189,
-  },
-  {
-    id: '3',
-    originalUrl: 'https://example.com/yet/another/long/url/for/testing/3',
-    shortUrl: 'ghi789',
-    createdAt: new Date(2025, 2, 13),
-    clicks: 57,
-  },
-  {
-    id: '4',
-    originalUrl: 'https://example.com/one/more/long/url/for/good/measure/4',
-    shortUrl: 'jkl012',
-    createdAt: new Date(2025, 2, 12),
-    clicks: 112,
-  },
-];
 
 const chartData = [
   { name: 'Mon', value: 120 },
@@ -92,7 +61,7 @@ export default async function DashboardPage() {
         </div>
         <div>
           <h2 className="mb-4 text-xl font-semibold">Recent Links</h2>
-          <LinkTable data={recentLinks} />
+          <Links limit={5} />
         </div>
       </div>
     </div>
