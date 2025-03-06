@@ -3,6 +3,9 @@ import { getIp } from '@/lib/getIp';
 // Adjust the import path as necessary
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-static';
+export const runtime = 'edge';
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ shortURL: string }> }) {
   const { shortURL } = await params;
   const ip = getIp(req); // Get the user's IP address
