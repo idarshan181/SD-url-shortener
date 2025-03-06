@@ -106,23 +106,16 @@ export function URLShortenerForm() {
       const shortUrl = `https://linksnip.com/${result.shortURL}`;
 
       // Show toast with copy button
-      toast.success(
-        <div className="flex flex-col space-y-2">
-          <p className="text-sm">URL successfully shortened!</p>
-          <div className="flex items-center space-x-2">
-            <span className="text-blue-500 underline cursor-pointer">{shortUrl}</span>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                navigator.clipboard.writeText(shortUrl);
-                toast.success('Copied to clipboard!');
-              }}
-            >
-              Copy
-            </Button>
-          </div>
-        </div>,
-      );
+      toast.success('URL successfully shortened!', {
+        description: shortUrl,
+        action: {
+          label: 'Copy',
+          onClick: () => {
+            navigator.clipboard.writeText(shortUrl);
+            toast.success('Copied to clipboard!');
+          },
+        },
+      });
       handleReset();
     } catch (error) {
       const errorMessage = (error as Error).message || 'Failed to shorten URL. Please try again.';
@@ -203,7 +196,7 @@ export function URLShortenerForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full cursor-pointer text-white" disabled={isLoading}>
               {isLoading
                 ? (
                     <>

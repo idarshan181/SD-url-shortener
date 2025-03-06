@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import { ThemeProvider } from '@/components/general/ThemeProvider';
 import { Toaster } from '@/components/ui/sonner';
 
-import { Analytics } from '@vercel/analytics/next';
-
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
@@ -41,7 +39,6 @@ export default function RootLayout({
         >
           {children}
           <Toaster richColors closeButton />
-          <Analytics />
         </ThemeProvider>
       </body>
     </html>
