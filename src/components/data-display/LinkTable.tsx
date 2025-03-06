@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { URL } from '@/lib/zodSchema';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -36,17 +37,16 @@ import { formatDistanceToNow } from 'date-fns';
 import { ChevronDown, Copy, MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-
-export interface LinkData {
-  id: string;
-  originalUrl: string;
-  shortUrl: string;
-  createdAt: Date;
-  clicks: number;
-}
+import { LinkPreview } from '../ui/link-preview';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 
 interface LinkTableProps {
-  data: LinkData[];
+  data: URL[];
 }
 
 export function LinkTable({ data }: LinkTableProps) {
@@ -54,7 +54,7 @@ export function LinkTable({ data }: LinkTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
-  const columns: ColumnDef<LinkData>[] = [
+  const columns: ColumnDef<URL>[] = [
     {
       id: 'select',
       header: ({ table }) => (
@@ -78,37 +78,57 @@ export function LinkTable({ data }: LinkTableProps) {
       enableHiding: false,
     },
     {
-      accessorKey: 'originalUrl',
+      accessorKey: 'longURL',
       header: 'Original URL',
+      size: 20,
+      maxSize: 100,
       cell: ({ row }) => {
-        const url = row.getValue('originalUrl') as string;
+        const url = row.getValue('longURL') as string;
         return (
-          <div className="flex w-fit items-center">
-            <span className="truncate font-medium">{url}</span>
+          <div className="flex items-center max-w-[300px]">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger className="truncate overflow-hidden text-ellipsis whitespace-nowrap block">
+                  {url}
+                </TooltipTrigger>
+                <TooltipContent className="break-all text-white">
+                  {url}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         );
       },
     },
     {
-      accessorKey: 'shortUrl',
+      accessorKey: 'shortURL',
       header: 'Short URL',
       cell: ({ row }) => {
-        const shortUrl = row.getValue('shortUrl') as string;
+        const link = row.original;
+        const shortURL = row.getValue('shortURL') as string;
         return (
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="font-mono">
-              {shortUrl}
-            </Badge>
+            <LinkPreview
+              url={link.longURL}
+              width={300}
+              height={200}
+            >
+              <Badge variant="outline" className="font-mono">
+                {shortURL}
+              </Badge>
+            </LinkPreview>
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8"
+              className="h-8 w-8 cursor-pointer"
               onClick={() => {
-                navigator.clipboard.writeText(`https://linksnip.com/${shortUrl}`);
+                navigator.clipboard.writeText(
+                  `https://linksnip.me/${shortURL}`,
+                );
                 toast.success(
                   <div>
                     <p>Copied to clipboard</p>
-                    <span>{`https://linksnip.com/${shortUrl}`}</span>
+                    <span>{`https://linksnip.me/${shortURL}`}</span>
                   </div>,
                 );
               }}
@@ -121,10 +141,10 @@ export function LinkTable({ data }: LinkTableProps) {
     },
     {
       accessorKey: 'clicks',
-      header: () => <div className="text-right">Clicks</div>,
+      header: () => <div className="text-center">Clicks</div>,
       cell: ({ row }) => {
         const clicks = row.getValue('clicks') as number;
-        return <div className="text-right font-medium">{clicks}</div>;
+        return <div className="text-center font-medium">{clicks}</div>;
       },
     },
     {
@@ -155,9 +175,20 @@ export function LinkTable({ data }: LinkTableProps) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(`https://linksnip.com/${link.shortUrl}`)}
+                className="cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `https://linksnip.me/${link.shortURL}`,
+                  );
+                  toast.success(
+                    <div>
+                      <p>Copied to clipboard</p>
+                      <span>{`https://linksnip.me/${link.shortURL}`}</span>
+                    </div>,
+                  );
+                }}
               >
-                <Copy className="mr-2 h-4 w-4" />
+                <Copy className="mr-2 h-4 w-4 hover:cursor-pointer" />
                 <span>Copy URL</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
@@ -198,9 +229,9 @@ export function LinkTable({ data }: LinkTableProps) {
       <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter links..."
-          value={(table.getColumn('originalUrl')?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn('longURL')?.getFilterValue() as string) ?? ''}
           onChange={event =>
-            table.getColumn('originalUrl')?.setFilterValue(event.target.value)}
+            table.getColumn('longURL')?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
         <div className="flex items-center gap-2">
