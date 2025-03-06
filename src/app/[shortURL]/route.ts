@@ -1,16 +1,9 @@
 import { prisma } from '@/lib/db';
 import { getIp } from '@/lib/getIp';
-import { rateLimitMiddleware } from '@/middleware';
 // Adjust the import path as necessary
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ shortURL: string }> }) {
-  // Apply rate limiting middleware
-  const rateLimitResponse = await rateLimitMiddleware(req);
-  if (rateLimitResponse) {
-    return rateLimitResponse;
-  } // Return if rate limit exceeded
-
   const { shortURL } = await params;
   const ip = getIp(req); // Get the user's IP address
 

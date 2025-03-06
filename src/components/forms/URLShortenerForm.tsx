@@ -82,7 +82,7 @@ export function URLShortenerForm() {
     setShortUrl('');
   };
 
-  async function onSubmit(_data: any) {
+  async function onSubmit(data: any) {
     setIsLoading(true);
     if (slugStatus === 'taken') {
       toast.error('Slug already taken. Please choose a different one.');
@@ -92,18 +92,18 @@ export function URLShortenerForm() {
 
     console.log(session?.user?.id);
     try {
-      // const response = await fetch('/api/v1/url/short', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ ...data, userId: session?.user?.id }),
-      // });
+      const response = await fetch('/api/v1/url/short', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...data, userId: session?.user?.id }),
+      });
 
-      // const result = await response.json();
-      // if (!response.ok) {
-      //   throw new Error(result.message || 'Something went wrong');
-      // }
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || 'Something went wrong');
+      }
 
-      // const shortUrl = `https://linksnip.com/${result.shortURL}`;
+      const shortUrl = `https://linksnip.com/${result.shortURL}`;
 
       // Show toast with copy button
       toast.success(
@@ -114,7 +114,7 @@ export function URLShortenerForm() {
             <Button
               variant="ghost"
               onClick={() => {
-                navigator.clipboard.writeText('x');
+                navigator.clipboard.writeText(shortUrl);
                 toast.success('Copied to clipboard!');
               }}
             >
