@@ -53,7 +53,7 @@ export function AnalyticsChart({
         {description && <CardDescription>{description}</CardDescription>}
         <Tabs
           defaultValue="area"
-          className="w-full"
+          className="w-full h-"
           onValueChange={setActiveTab}
         >
           <TabsList className="grid w-full grid-cols-3">

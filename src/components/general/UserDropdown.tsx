@@ -1,5 +1,5 @@
 import { handleSignOut } from '@/app/actions';
-import { ChevronDown, Heart, LogOut } from 'lucide-react';
+import { ChevronDown, LogOut, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -42,7 +42,7 @@ export default function UserDropdown({ email, name, image }: iAppProps) {
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link href="/dashboard/settings">
-              <Heart size={16} strokeWidth={2} className="opacity-60" />
+              <Settings size={16} strokeWidth={2} className="opacity-60" />
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
