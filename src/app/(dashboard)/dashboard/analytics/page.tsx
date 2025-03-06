@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { browserData, clicksByDay, deviceData, referrerData } from '@/data/analytics';
+import { browserData, clicksByDay, deviceData } from '@/data/analytics';
 import { format } from 'date-fns';
 import { BarChart2, Calendar as CalendarIcon, Globe, Laptop, Smartphone, Users } from 'lucide-react';
 import { useState } from 'react';
@@ -101,44 +100,12 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="mt-6">
-        <Tabs defaultValue="browsers">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="browsers">Browsers</TabsTrigger>
-            <TabsTrigger value="referrers">Referrers</TabsTrigger>
-          </TabsList>
-          <TabsContent value="browsers">
-            <Card>
-              <CardHeader>
-                <CardTitle>Browser Distribution</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
-                  <AnalyticsChart
-                    data={browserData}
-                    title=""
-                    description=""
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="referrers">
-            <Card>
-              <CardHeader>
-                <CardTitle>Traffic Sources</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
-                  <AnalyticsChart
-                    data={referrerData}
-                    title=""
-                    description=""
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        <AnalyticsChart
+          data={browserData}
+          title="Browser Distribution"
+          description=""
+        />
+
       </div>
     </>
   );
