@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { AnalyticsChart } from '@/components/data-display/AnalyticsChart';
 import { LinkTable } from '@/components/data-display/LinkTable';
 import { StatsCard } from '@/components/data-display/StatsCard';
@@ -54,9 +53,7 @@ const chartData = [
 ];
 
 export default async function DashboardPage() {
-  const user = await requireUser();
-
-  console.log('user: ', user);
+  await requireUser();
   return (
     <div className="p-4 md:p-6">
       <div className="grid gap-6">
