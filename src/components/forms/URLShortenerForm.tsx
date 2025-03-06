@@ -4,12 +4,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useSlugAvailability } from '@/hooks/useSlugAvailability';
 import { URLFormSchema } from '@/lib/zodSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRight, CheckCircle, Copy, Loader2, XCircle } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -19,9 +19,6 @@ type FormValues = z.infer<typeof URLFormSchema>;
 
 export function URLShortenerForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [slugStatus, setSlugStatus] = useState<
-    'valid' | 'taken' | 'checking' | null
-  >(null);
   const [shortUrl, setShortUrl] = useState<string | null>(null);
 
   const { data: session } = useSession();
@@ -34,44 +31,16 @@ export function URLShortenerForm() {
     },
   });
 
-  const debouncedSlug = useDebounce(form.watch('shortURL'), 500);
-
-  useEffect(() => {
-    if (!debouncedSlug) {
-      setSlugStatus(null);
-      return;
-    }
-
-    const checkSlugAvailability = async () => {
-      setSlugStatus('checking');
-
-      try {
-        const response = await fetch(
-          `/api/v1/shorturl?customslug=${debouncedSlug}`,
-        );
-        const data = await response.json();
-
-        if (response.ok && data.available) {
-          setSlugStatus('valid');
-        } else {
-          setSlugStatus('taken');
-        }
-      } catch (error) {
-        console.error('Error checking slug:', error);
-        setSlugStatus('taken'); // Assume taken if API fails
-      }
-    };
-
-    checkSlugAvailability();
-  }, [debouncedSlug]);
+  const shorURLInput = form.watch('shortURL') || '';
+  const slugStatus = useSlugAvailability(shorURLInput); // 🔹 Reusable hook
 
   const handleCopy = () => {
     if (shortUrl) {
-      navigator.clipboard.writeText(`https://linksnip.com/${shortUrl}`);
+      navigator.clipboard.writeText(`https://linksnip.me/${shortUrl}`);
       toast.success(
         <div>
           <p>Copied to clipboard</p>
-          <span>{`https://linksnip.com/${shortUrl}`}</span>
+          <span>{`https://linksnip.me/${shortUrl}`}</span>
         </div>,
       );
     }
@@ -103,7 +72,7 @@ export function URLShortenerForm() {
         throw new Error(result.message || 'Something went wrong');
       }
 
-      const shortUrl = `https://linksnip.com/${result.shortURL}`;
+      const shortUrl = `https://linksnip.me/${result.shortURL}`;
 
       // Show toast with copy button
       toast.success('URL successfully shortened!', {

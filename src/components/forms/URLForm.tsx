@@ -2,12 +2,12 @@
 
 /* eslint-disable no-console */
 
-import { useDebounce } from '@/hooks/useDebounce';
+import { useSlugAvailability } from '@/hooks/useSlugAvailability';
 import { URLFormSchema } from '@/lib/zodSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRight, CheckCircle, XCircle } from 'lucide-react';
 // src/components/dashboard/URLForm.tsx
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '../ui/button';
@@ -22,9 +22,6 @@ import { Input } from '../ui/input';
 
 export default function URLForm() {
   const [pending, setPending] = useState(false);
-  const [slugStatus, setSlugStatus] = useState<
-    'valid' | 'taken' | 'checking' | null
-  >(null);
 
   const form = useForm<z.infer<typeof URLFormSchema>>({
     resolver: zodResolver(URLFormSchema),
@@ -33,38 +30,10 @@ export default function URLForm() {
       shortURL: '',
     },
   });
-
-  const debouncedSlug = useDebounce(form.watch('shortURL'), 500);
+  const shortURL = form.watch('shortURL') || '';
+  const slugStatus = useSlugAvailability(shortURL); // 🔹 Reusable hook
 
   // Check availability when debouncedSlug changes
-  useEffect(() => {
-    if (!debouncedSlug) {
-      setSlugStatus(null);
-      return;
-    }
-
-    const checkSlugAvailability = async () => {
-      setSlugStatus('checking');
-
-      try {
-        const response = await fetch(
-          `/api/v1/shorturl?customslug=${debouncedSlug}`,
-        );
-        const data = await response.json();
-
-        if (response.ok && data.available) {
-          setSlugStatus('valid');
-        } else {
-          setSlugStatus('taken');
-        }
-      } catch (error) {
-        console.error('Error checking slug:', error);
-        setSlugStatus('taken'); // Assume taken if API fails
-      }
-    };
-
-    checkSlugAvailability();
-  }, [debouncedSlug]);
 
   async function onSubmit(data: z.infer<typeof URLFormSchema>) {
     setPending(true);
