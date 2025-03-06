@@ -16,27 +16,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: 'jwt',
   },
   callbacks: {
-    // async signIn({ user }) {
-    //   if (!user.email) {
-    //     return false;
-    //   }
-
-    //   await prisma.user.update({
-    //     where: { email: user.email },
-    //     data: { lastLogin: new Date() },
-    //   });
-
-    //   return true;
-    // },
     async jwt({ token, user }) {
       if (user?.email && !token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { email: user.email },
-          select: { id: true },
+          select: { id: true, lastLogin: true },
         });
 
         if (dbUser?.id) {
           token.id = dbUser.id; // Store user ID in JWT token
+          token.lastLogin = dbUser.lastLogin;
         }
       }
       return token;
@@ -45,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (token?.id) {
         session.user.id = String(token.id);
-
+        session.user.lastLogin = token.lastLogin as Date || null; // Attach lastLogin to session
         // Update lastLogin only when session is renewed
         await prisma.user.update({
           where: { id: String(token.id) },
