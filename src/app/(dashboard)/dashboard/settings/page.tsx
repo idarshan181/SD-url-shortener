@@ -1,6 +1,8 @@
 import { SettingsForm } from '@/components/forms/SettingsForm';
+import { requireUser } from '@/lib/requireUser';
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  await requireUser();
   return (
     <div>
       <div className="mb-6">
