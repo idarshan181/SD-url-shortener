@@ -2,17 +2,24 @@
 
 import { AnalyticsChart } from '@/components/data-display/AnalyticsChart';
 import { StatsCard } from '@/components/data-display/StatsCard';
+import { PokemonInfo } from '@/components/general/PokemonInfo';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { browserData, clicksByDay, deviceData } from '@/data/analytics';
+import { getQueryClient } from '@/lib/getQueryClient';
+import { pokemonOptions } from '@/query/pokemon';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { BarChart2, Calendar as CalendarIcon, Globe, Laptop, Smartphone, Users } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AnalyticsPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const queryClient = getQueryClient();
+
+  void queryClient.prefetchQuery(pokemonOptions);
   return (
     <>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -107,6 +114,10 @@ export default function AnalyticsPage() {
         />
 
       </div>
+
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <PokemonInfo />
+      </HydrationBoundary>
     </>
   );
 }
